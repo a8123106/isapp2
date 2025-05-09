@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script type="text/javascript" src="../lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../lib/osql.js"></script>
+
+    <script>
+        osql.requireLogin();//すべてのページに入れる．google認証をして，osql.connect()や，osql.getMe()を使えるようにしてくれる．
+
+        function button1Pressed() {
+            doSelect();
+        }
+        function button2Pressed() {
+            doSearch();
+        }
+        async function doSelect() {
+            var sql = 'select * from Tweets order by time desc';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<ul>';
+            for (var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+                html = html + '<li>' + object.name + ',' + object.tweet + ',' + object.time + '</li>';
+            }
+            html = html + '</ul>';
+            document.getElementById('result').innerHTML = html;
+        }
+        async function doSearch() {
+            var word = document.getElementById('tf1').value;
+            var sql1 = `select * from Tweets where tweet like ("%${word}%") `;
+            var objects1 = await osql.connect(sql1);
+            var html1 = '';
+            html1 = html1 + '<ul>';
+            for (var k = 0; k < objects1.length; k++) {
+                var object1 = objects1[k];
+                html1 = html1 + '<li>' + object1.name + ',' + object1.tweet + ',' + object1.time + '</li>';
+            }
+            html1 = html1 + '</ul>';
+            document.getElementById('result1').innerHTML = html1;
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>Tweets</h1>
+    <button onclick="button1Pressed()">X</button>
+    <br>
+    <input id="tf1" value="" type="textfield">
+    <button onclick="button2Pressed()">検索</button>
+    <hr>
+    <p id="result1">検索結果を表示</p>
+    <hr>
+    <p id="result">xxxx</p>
+
+
+
+
+</body>
+
+</html>
