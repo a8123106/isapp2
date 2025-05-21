@@ -10,22 +10,59 @@
 
     <script>
         osql.requireLogin();//すべてのページに入れる．google認証をして，osql.connect()や，osql.getMe()を使えるようにしてくれる．
-
         $().ready(function () {
-            doHello();
+            doSelect();
         });
 
-        async function doHello() {
-            document.getElementById('result').innerHTML = 'hello!';
+        $().ready(function () {
+            x = 0;
+            setInterval(doSelect, 1000);
+        });
+
+
+        async function doSelect() {
+            var sql = 'select * from Tweets order by time desc';
+            var objects = await osql.connect(sql);
+            console.log(objects);
+            var html = '';
+            html = html + '<ul>';
+            for (var i = 0; i < objects.length; i++) {
+                var object = objects[i];
+                html = html + '<li>' + object.name + ',' + object.tweet + ',' + object.time + '</li>';
+            }
+            html = html + '</ul>';
+            x++;
+            document.getElementById('result').innerHTML = html;
+        }
+        function button1Pressed() {
+            doInsert();
+        }
+
+        async function doInsert() {
+            var name = sessionStorage.getItem('username');
+            //document.getElementById('tf1').innerHTML = name;
+            var tweet = document.getElementById('tf2').value;
+
+            var sql = `insert into Tweets (name, tweet, time) values("${name}", "${tweet}", now());`;
+            var objects = await osql.connect(sql);
+            console.log(objects);
+
+            document.getElementById('result').innerHTML = "tweetしました";
+            document.getElementById('tf2').value = "";
+
         }
     </script>
 
 </head>
 
 <body>
-    <h1>Hello</h1>
-    <hr>
-    <p id="result">xxxx</p>
+    <h1>Tweets</h1>
+    <br>
+    tweet:<input id="tf2" type="textfield">
+    <button onclick="button1Pressed()">tweet</button>
+    <br>
+    <p id="result"></p>
+
 </body>
 
 </html>
