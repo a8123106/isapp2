@@ -27,6 +27,7 @@
                 html = html + '<td>' + object.id + '</td>';
                 html = html + '<td>' + object.name + '</td>';
                 html = html + '<td>' + '<a href="update.html?userid=' + object.id + '">変更</a>' + '</td>';
+                html = html + '<td><button onclick="buttonDelete()">削除</button></td >'
                 html = html + '</tr>';
             }
             html = html + '</table>';
@@ -34,12 +35,17 @@
         }
 
         async function buttonDelete() {
-            var id = document.getElementById('textfield1').value;
-            var sql = `delete from Users where id = "${id}"`;
-            var objects = await osql.connect(sql);
-            console.log(objects);
-            window.alert('削除しました');
-            execSelect();
+            var ans = window.confirm('本当にいいんですね？');
+            if (ans == true) {
+                var id = document.getElementById('userid').value;
+                var sql = `delete from Users where id = "${id}"`;
+                var objects = await osql.connect(sql);
+                console.log(objects);
+                window.alert('削除しました');
+                execSelect();
+            } else {
+                execSelect();
+            }
         }
     </script>
 
@@ -47,10 +53,6 @@
 
 <body>
     <h1>Users</h1>
-    <hr>
-    ID:<input id="textfield1" type="text"><button onclick="buttonDelete()">削除</button>
-    <hr>
-    <div id="delete"></div>
     <p id="result">xxxx</p>
 </body>
 
