@@ -40,7 +40,6 @@
 
         async function doInsert() {
             var name = sessionStorage.getItem('username');
-            //document.getElementById('tf1').innerHTML = name;
             var tweet = document.getElementById('tf2').value;
 
             var sql = `insert into Tweets (name, tweet, time) values("${name}", "${tweet}", now());`;
