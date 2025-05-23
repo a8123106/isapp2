@@ -32,7 +32,6 @@
 
         function buttonChange() {
             var Id = sessionStorage.getItem('userid');
-            //var name1 = osql.getParam(`${Id}`);
             location.href = `update.html?userid=${Id}`;
         }
 
@@ -43,11 +42,12 @@
 
 <body>
     <h1>ユーザトップ</h1>
-    <p id="welcome">ようこそxxさん</p>
+    <span id="welcome"></span>
     <hr>
-    <div id="change"></div>
+
     <button onclick="buttonChange()">変更</button>
     <ul>
+
         <li><a href='tweet.html'>Tweet</a></li>
     </ul>
 </body>
