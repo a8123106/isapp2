@@ -13,6 +13,7 @@
 
         $(document).ready(function () {
             execSelect();
+            Followed();
         });
 
         async function execSelect() {
@@ -26,7 +27,8 @@
                 var object = objects[i];
                 html = html + '<td>' + object.id + '</td>';
                 html = html + '<td>' + object.name + '</td>';
-                html = html + `<td><button onclick="buttonFollow(${object.id})">フォロー</button></td >`;
+                html = html + `<td><button onclick="buttonFollow('${object.name}')">フォロー</button></td >`;
+                html = html + `<td><button onclick="buttonNotFollow('${object.name}')">フォローをやめる</button></td >`;
                 html = html + '</tr>';
             }
             html = html + '</table>';
@@ -34,14 +36,37 @@
         }
 
         async function buttonFollow(toid) {
-            var sql1 = 'select * from Follows';
-            var objects1 = await osql.connect(sql1);
-            console.log(objects1);
-            var myid = sessionStorage.getItem('userid');
-            var sql2 = `insert into Follows (fromid, toid) values ('${myid}', '${toid}')`;
+            var myid = sessionStorage.getItem('username');
+            var sql2 = `insert into Follows values ('${myid}', '${toid}')`;
             var objects2 = await osql.connect(sql2);
             console.log(objects2);
             window.alert('フォローしました');
+        }
+        async function buttonNotFollow(Id) {
+            var ans = window.confirm('本当にいいんですね？');
+            if (ans == true) {
+                var sql = `delete from Follows where toid = "${Id}"`;
+                var objects = await osql.connect(sql);
+                console.log(objects);
+                window.alert('フォローをやめました');
+                execSelect();
+            } else {
+                execSelect();
+            }
+        }
+
+        async function Followed() {
+            var myid = sessionStorage.getItem('username');
+            var sql3 = `select * from Follows where fromid = '${myid}'`
+            var objects3 = await osql.connect(sql3);
+            var html1 = '';
+            html1 = html1 + '<ul>';
+            for (var k = 0; k < objects3.length; k++) {
+                var object3 = objects3[k];
+                html1 = html1 + '<li>' + object3.toid + '</li>';
+            }
+            html1 = html1 + '</ul>';
+            document.getElementById('followed').innerHTML = html1;
         }
 
     </script>
@@ -51,6 +76,8 @@
 <body>
     <h1>フォローする</h1>
     <div id="result"></div>
+    <h2>フォロー中</h2>
+    <div id="followed"></div>
 </body>
 
 </html>
